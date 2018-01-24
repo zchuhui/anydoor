@@ -6,6 +6,7 @@ const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const config = require('./default-config');
 const mimeType = require('../helper/mime');
+const compress = require('../helper/compress');
 
 // 读取模块
 const tplPath = path.join(__dirname, '../templates/dir.tpl');
@@ -22,7 +23,14 @@ module.exports = async function (req, res, filePath) {
     if (stats.isFile()) {
       res.statusCode = 200;
       res.setHeader('Content-Type', contentType);
-      fs.createReadStream(filePath).pipe(res);
+
+      let rs = fs.createReadStream(filePath);
+
+      // 压缩
+      /* if (filePath.match(config.compress)) {
+        rs = compress(rs,req,res);
+      } */
+      rs.pipe(res);
     }
     // 路径是文件夹
     else if (stats.isDirectory()) {

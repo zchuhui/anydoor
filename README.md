@@ -89,3 +89,6 @@ server.listen(conf.port,conf.hostname,()=>{
 
 > 每修改一次都得运行 `node app.js` 会非常繁琐，可以使用 `supervisor app.js`，每次修改后，都会帮你自动启动。
 > 具体用法：使用`npm i -g supervisor`全局安装后即可使用。
+
+## 3.压缩与range范围请求
+
