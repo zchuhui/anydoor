@@ -6,7 +6,7 @@ const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const config = require('./default-config');
 const mimeType = require('../helper/mime');
-const compress = require('../helper/compress');
+//const compress = require('../helper/compress');
 
 // 读取模块
 const tplPath = path.join(__dirname, '../templates/dir.tpl');
