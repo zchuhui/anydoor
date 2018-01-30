@@ -32,7 +32,6 @@ module.exports = async function (req, res, filePath) {
       let rs;
       // 设置请求范围
       const {code,start,end} = range(stats.size,req,res);
-      console.log(code,start,end);
       if (code == 200) {
         rs = fs.createReadStream(filePath);
       }
@@ -42,7 +41,6 @@ module.exports = async function (req, res, filePath) {
 
       // 压缩
       if (filePath.match(config.compress)) {
-        console.log('compress...');
         rs = compress(rs,req,res);
       }
 
