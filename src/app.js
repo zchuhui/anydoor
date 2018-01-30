@@ -3,7 +3,7 @@ const http = require('http');       // 请求
 const path = require('path');       // 路劲
 const chalk = require('chalk');     // 打印
 const conf = require('./config/default-config');
-const route = require('./config/route');
+const route = require('./helper/route');
 
 const server = http.createServer((req,res)=>{
   // 获取当前目录

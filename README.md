@@ -90,5 +90,21 @@ server.listen(conf.port,conf.hostname,()=>{
 > 每修改一次都得运行 `node app.js` 会非常繁琐，可以使用 `supervisor app.js`，每次修改后，都会帮你自动启动。
 > 具体用法：使用`npm i -g supervisor`全局安装后即可使用。
 
-## 3.压缩与range范围请求
+## 3.压缩
+
+如果文件不压缩就传输，会显得文件很大，但传输的文件很大时，性能就会受到很大的影响。所有有必要在传输的时候压缩，即`request`跟`response`时，对文件进行压缩跟解压，以达到优化的效果。
+
+压缩函数封装在：`src/helper/compress` 里面
+
+## 4.range——请求范围设置
+
+客户端在请求的时候，可以设置请求的字节范围，服务器也根据请求那对应的文件跟字节，而不是一下把所有的内容都返回，利于站点的优化。
+
+实现这一点，需要三步：
+
+- range:bytes=[start]-[end]   // 设置字节范围
+- Accept-Ranges: bytes        // 设置响应头，即服务器可以处理的格式，这是格式是字节
+- Content-Range:bytes start-end/total   //服务器返回的格式
+
+## 5. 缓存
 

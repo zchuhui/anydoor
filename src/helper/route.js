@@ -4,9 +4,14 @@ const Handlebars = require('handlebars');
 const promisify = require('util').promisify;
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
-const config = require('./default-config');
+// 配置
+const config = require('../config/default-config');
+// 文件类型
 const mimeType = require('../helper/mime');
-//const compress = require('../helper/compress');
+// 压缩
+const compress = require('../helper/compress');
+// 设置请求范围
+const range = require('../helper/range');
 
 // 读取模块
 const tplPath = path.join(__dirname, '../templates/dir.tpl');
@@ -19,20 +24,32 @@ module.exports = async function (req, res, filePath) {
     const stats = await stat(filePath);
     const contentType = mimeType(filePath);
 
-    // 路径是文件
+    // 文件
     if (stats.isFile()) {
       res.statusCode = 200;
       res.setHeader('Content-Type', contentType);
 
-      let rs = fs.createReadStream(filePath);
+      let rs;
+      // 设置请求范围
+      const {code,start,end} = range(stats.size,req,res);
+      console.log(code,start,end);
+      if (code == 200) {
+        rs = fs.createReadStream(filePath);
+      }
+      else{
+        rs = fs.createReadStream(filePath,{start,end});
+      }
 
       // 压缩
-      /* if (filePath.match(config.compress)) {
+      if (filePath.match(config.compress)) {
+        console.log('compress...');
         rs = compress(rs,req,res);
-      } */
+      }
+
       rs.pipe(res);
     }
-    // 路径是文件夹
+
+    // 文件夹
     else if (stats.isDirectory()) {
       const files = await readdir(filePath);
       res.statusCode = 200;
