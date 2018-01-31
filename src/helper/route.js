@@ -12,6 +12,8 @@ const mimeType = require('../helper/mime');
 const compress = require('../helper/compress');
 // 设置请求范围
 const range = require('../helper/range');
+// 缓存
+const isFresh = require('../helper/cache');
 
 // 读取模块
 const tplPath = path.join(__dirname, '../templates/dir.tpl');
@@ -29,19 +31,26 @@ module.exports = async function (req, res, filePath) {
       res.statusCode = 200;
       res.setHeader('Content-Type', contentType);
 
+      // 已存在缓存，所以不在发送
+      if (isFresh(stats, req, res)) {
+        res.statusCode = 304;
+        res.end();
+        return;
+      }
+
       let rs;
       // 设置请求范围
-      const {code,start,end} = range(stats.size,req,res);
+      const { code, start, end } = range(stats.size, req, res);
       if (code == 200) {
         rs = fs.createReadStream(filePath);
       }
-      else{
-        rs = fs.createReadStream(filePath,{start,end});
+      else {
+        rs = fs.createReadStream(filePath, { start, end });
       }
 
       // 压缩
       if (filePath.match(config.compress)) {
-        rs = compress(rs,req,res);
+        rs = compress(rs, req, res);
       }
 
       rs.pipe(res);
@@ -60,10 +69,10 @@ module.exports = async function (req, res, filePath) {
       const data = {
         title: path.basename(filePath),
         dir: dir ? `/${dir}` : null,
-        files:files.map((file)=>{
+        files: files.map((file) => {
           return {
             file,
-            icon:mimeType(file)
+            icon: mimeType(file)
           }
         })
       };

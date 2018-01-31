@@ -108,3 +108,11 @@ server.listen(conf.port,conf.hostname,()=>{
 
 ## 5. 缓存
 
+![缓存原理图](https://img.mukewang.com/szimg/59e334900001865119201080.jpg)
+
+实现缓存header步骤：
+
+1. 判断本地有没有失效，有`Expires`跟`Cache-Contral`，目前常用是`Cache-Control`
+2. 服务器时间校验：`If-Modifiend-Since / Last-Modified`
+3. 服务器哈希校验：`If-None-Match / ETag`
+4. 时间校验跟哈希校验选择其一即可。
