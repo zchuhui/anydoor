@@ -5,7 +5,7 @@ const promisify = require('util').promisify;
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 // 配置
-const config = require('../config/default-config');
+//const config = require('../config/default-config');
 // 文件类型
 const mimeType = require('../helper/mime');
 // 压缩
@@ -20,7 +20,7 @@ const tplPath = path.join(__dirname, '../templates/dir.tpl');
 const source = fs.readFileSync(tplPath, 'utf-8');
 const template = Handlebars.compile(source);
 
-module.exports = async function (req, res, filePath) {
+module.exports = async function (req, res, filePath,config) {
   try {
     // 读取路径
     const stats = await stat(filePath);
